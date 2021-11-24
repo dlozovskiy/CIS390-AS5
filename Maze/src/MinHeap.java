@@ -37,7 +37,8 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void push(Vertex x, int p) {
-
+		H.add(new Pair(x, p));
+		bubble_up(p);
 	}
 
 	// Returns the vertex at the front of the MinHeap.
@@ -63,14 +64,31 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void decrease_key(Vertex x, int new_p) {
+
 	}
 
 	void bubble_up(int i) {
+		if (i <= 0)
+			return;
+		if (H.get(i).val < H.get((i - 1) / 2).val) {
+			Collections.swap(H, i, (i - 1 / 2));
+			bubble_up((i - 1) / 2);
 
+		}
 	}
 
 	void bubble_down(int i) {
-
+		int lChild = (int) H.get(2 * i + 1).val;
+		int rChild = H.get(2 * i + 2).val;
+		int parent = H.get(i).val;
+		if (lChild < rChild && rChild < parent) {
+			Collections.swap(H, 2 * i + 1, i);
+			bubble_down(2 * i + 1);
+		}
+		if (rChild < lChild && lChild < parent) {
+			Collections.swap(H, 2 * i + 2, i);
+			bubble_down(2 * i + 2);
+		}
 	}
 
 }
