@@ -38,7 +38,7 @@ public class MinHeap {
 	// Must run in O(log(n)) time.
 	void push(Vertex x, int p) {
 		H.add(new Pair(x, p));
-		bubble_up(p);
+		bubble_up(H.size() - 1);
 	}
 
 	// Returns the vertex at the front of the MinHeap.
@@ -54,6 +54,8 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void pop() {
+		if (H.size() == 0)
+			return;
 
 	}
 
