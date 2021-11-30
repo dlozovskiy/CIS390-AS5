@@ -38,7 +38,7 @@ public class MinHeap {
 	// Must run in O(log(n)) time.
 	void push(Vertex x, int p) {
 		H.add(new Pair(x, p));
-		bubble_up(H.size() - 1);
+		bubble_up(p);
 	}
 
 	// Returns the vertex at the front of the MinHeap.
@@ -46,7 +46,11 @@ public class MinHeap {
 	//
 	// Must run in O(1) time.
 	Vertex front() {
-		return new Vertex(0, 0);
+		if (H.size() == 0) {
+			return null;
+		} else {
+			return H.get(0).getnode();
+		}
 	}
 
 	// Removes the vertex at the front of the MinHeap.
@@ -56,6 +60,11 @@ public class MinHeap {
 	void pop() {
 		if (H.size() == 0)
 			return;
+		Pair newRoot = H.get(H.size() - 1);
+		H.remove(0);
+		H.add(newRoot);
+		H.remove(H.size() - 1);
+		bubble_down(newRoot.getvalue());
 
 	}
 
@@ -80,16 +89,18 @@ public class MinHeap {
 	}
 
 	void bubble_down(int i) {
-		int lChild = (int) H.get(2 * i + 1).val;
-		int rChild = H.get(2 * i + 2).val;
-		int parent = H.get(i).val;
+		int lChild = (int) H.get(2 * i + 1).getvalue();
+		int rChild = H.get(2 * i + 2).getvalue();
+		int parent = H.get(i).getvalue();
 		if (lChild < rChild && rChild < parent) {
 			Collections.swap(H, 2 * i + 1, i);
 			bubble_down(2 * i + 1);
+			// go to left child
 		}
 		if (rChild < lChild && lChild < parent) {
 			Collections.swap(H, 2 * i + 2, i);
 			bubble_down(2 * i + 2);
+			// go to right child
 		}
 	}
 
