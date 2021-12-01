@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 
-
 public class MinHeap {
 
 	// For the mandatory running times below:
@@ -13,7 +12,7 @@ public class MinHeap {
 	// (they are average case, but not worst-case).
 
 	Hashtable<Vertex, Integer> I; // Maps elements to indices in H and you need this when you define
-											// decrease_key()
+	// decrease_key()
 	ArrayList<Pair> H; // The heap
 	int size; // size of your heap
 
@@ -39,7 +38,8 @@ public class MinHeap {
 	// Must run in O(log(n)) time.
 	void push(Vertex x, int p) {
 		H.add(new Pair(x, p));
-		bubble_up(H.size()-1);
+		I.put(x, p);
+		bubble_up(H.size() - 1);
 	}
 
 	// Returns the vertex at the front of the MinHeap.
@@ -59,12 +59,13 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void pop() {
-	if (H.size() < 2) {
-		return;
+		if (H.size() < 2) {
+			return;
 		}
+		I.remove(H.get(0).v);
 		Pair newRoot = H.get(H.size() - 1);
 		H.set(0, newRoot);
-		H.remove(H.size()-1);
+		H.remove(H.size() - 1);
 		bubble_down(0);
 
 	}
@@ -76,27 +77,30 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void decrease_key(Vertex x, int new_p) {
-
+		if (I.get(x) != null) {
+			int hval = I.get(x);
+		}
+	
 	}
 
 	void bubble_up(int i) {
 		if (H.size() == 0) {
 			return;
 		}
-			int parent = H.get((i-1)/2).getvalue();
-			int current = H.get(i).getvalue();
-		
-			if (current < parent) {
-				Collections.swap(H, i, (i - 1 / 2));
-				bubble_up((i - 1) / 2);
-			}
+		int parent = H.get((i - 1) / 2).getvalue();
+		int current = H.get(i).getvalue();
+
+		if (current < parent) {
+			Collections.swap(H, i, (i - 1 / 2));
+			bubble_up((i - 1) / 2);
+		}
 	}
 
 	void bubble_down(int i) {
 		int lChild = H.get(2 * i + 1).getvalue();
 		int rChild = H.get(2 * i + 2).getvalue();
 		int parent = H.get(i).getvalue();
-		
+
 		if (lChild < rChild && rChild < parent) {
 			Collections.swap(H, 2 * i + 1, i);
 			bubble_down(2 * i + 1);
