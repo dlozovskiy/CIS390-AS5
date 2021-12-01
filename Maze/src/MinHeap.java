@@ -77,10 +77,12 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void decrease_key(Vertex x, int new_p) {
-		if (I.get(x) != null) {
-			int hval = I.get(x);
+
+		if (I.get(x) == null) {
+			return;
 		}
-	
+		int vVal = I.get(x);
+
 	}
 
 	void bubble_up(int i) {
