@@ -40,6 +40,7 @@ public class MinHeap {
 	void push(Vertex x, int p) {
 		H.add(new Pair(x, p));
 		I.put(x,p);
+		size+=1;
 		bubble_up(H.size()-1);
 	}
 
@@ -68,6 +69,7 @@ public class MinHeap {
 		I.remove(H.get(0).v);
 		H.set(0, newRoot);
 		H.remove(H.size()-1);
+		size-=1;
 		bubble_down(0);
 
 	}
