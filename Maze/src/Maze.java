@@ -34,7 +34,34 @@ public class Maze {
 		}
 		System.out.println(heap.size);
 
-		findNeighs(map);
+		
+		
+		s.dist = 0;
+		s = findNeighs(s, map);
+
+		heap.push(s,0);
+		for(int i = 0; i<s.neighs.size();i++){
+			Vertex vert = s.neighs.get(i).getnode();
+			vert = findNeighs(vert, map);
+			vert.dist = s.dist+s.neighs.get(i).getvalue();
+			vert.pre = s;
+
+			heap.push(vert,vert.dist);
+		}
+
+
+		for(int n = 0; n<V.size(); n++){
+			Vertex vert = V.get(n);
+			for (int i = 0; i<vert.neighs.size(); i++){
+				Vertex toPush = vert.neighs.get(i).getnode();
+				toPush.pre = vert;
+				toPush.dist = vert.dist+vert.neighs.get(i).getvalue();
+				heap.push(vert.neighs.get(i).getnode(), vert.dist+=vert.neighs.get(i).getvalue());
+			}
+		}
+		
+
+		
 		// System.out.println(s.neighs.size());
 
 		Deconstructor();
@@ -43,13 +70,11 @@ public class Maze {
 
 	}
 
-	void findNeighs(char[][] map) {
+	Vertex findNeighs(Vertex vert, char[][] map) {
 
-		for (int i = 0; i < V.size(); i++) {
-			Vertex vert = V.get(i);
 			int vRow = vert.row;
 			int vCol = vert.col;
-			vert.dist = Math.abs(vRow - s.row) + Math.abs(vCol - s.col);
+			//vert.dist = Math.abs(vRow - s.row) + Math.abs(vCol - s.col);
 			Vertex neigh;
 
 			// UP
@@ -100,7 +125,7 @@ public class Maze {
 				// System.out.println("OH NO!");
 			}
 
-		}
+			return vert;
 
 	}
 
@@ -115,7 +140,7 @@ public class Maze {
 			for (int c = 0; c < col.length; c++) {
 				tomap[r][c] = col[c];
 				if (col[c] == 32 || (col[c] <= 57 && col[c] >= 48)) {
-					V.add(new Vertex(r, c));
+					//V.add(new Vertex(r, c));
 					// START AND END POINTS
 					int r_perimeter = row.length - 1;
 					int c_perimeter = col.length - 1;
