@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.lang.Math;
 
 public class Maze {
 
@@ -25,12 +26,16 @@ public class Maze {
 	String solve(String maze) {
 
 		// Find Start and Sink Points
-		char map[][] = startSink(maze);
+		char[][] map = startSink(maze);
 
 		MinHeap heap = new MinHeap();
-		heap.push(s, 0);
+		for (int i = 0; i < V.size() - 1; i++) {
+			heap.push(V.get(i), 0);
+		}
+		System.out.println(heap.size);
 
-		// findNeighs(s, map);
+		findNeighs(map);
+		// System.out.println(s.neighs.size());
 
 		Deconstructor();
 		System.out.println(printPath(map));
@@ -38,56 +43,65 @@ public class Maze {
 
 	}
 
-	void findNeighs(Vertex vert, char[][] map) {
-		if (vert.col == t.col && vert.row == t.row)
-			return;
+	void findNeighs(char[][] map) {
 
-		int vRow = vert.row;
-		int vCol = vert.col;
-		Vertex neigh;
-		// UP
-		try {
-			if (map[vRow - 1][vCol] == 32) {
-				neigh = new Vertex(vRow - 1, vCol);
-				findNeighs(neigh, map);
-				vert.neighs.add(new Pair(neigh, 1));
+		for (int i = 0; i < V.size(); i++) {
+			Vertex vert = V.get(i);
+			int vRow = vert.row;
+			int vCol = vert.col;
+			vert.dist = Math.abs(vRow - s.row) + Math.abs(vCol - s.col);
+			Vertex neigh;
 
+			// UP
+			try {
+				if (map[vRow - 1][vCol] == 32) {
+					// System.out.println("UP!");
+					neigh = new Vertex(vRow - 1, vCol);
+					neigh.pre = vert;
+					vert.neighs.add(new Pair(neigh, 1));
+
+				}
+			} catch (Exception e) {
+				// System.out.println("OH NO!");
 			}
-		} catch (Exception e) {
+			// DOWN
+			try {
+				if (map[vRow + 1][vCol] == 32) {
+					// System.out.println("DOWN!");
+					neigh = new Vertex(vRow + 1, vCol);
+					neigh.pre = vert;
+					vert.neighs.add(new Pair(neigh, 1));
+
+				}
+			} catch (Exception e) {
+				// System.out.println("OH NO!");
+			}
+			// LEFT
+			try {
+				if (map[vRow][vCol - 1] == 32) {
+					// System.out.println("LEFT!");
+					neigh = new Vertex(vRow, vCol - 1);
+					neigh.pre = vert;
+					vert.neighs.add(new Pair(neigh, 1));
+
+				}
+			} catch (Exception e) {
+				// System.out.println("OH NO!");
+			}
+			// RIGHT
+			try {
+				if (map[vRow][vCol + 1] == 32) {
+					// System.out.println("RIGHT!");
+					neigh = new Vertex(vRow, vCol + 1);
+					neigh.pre = vert;
+					vert.neighs.add(new Pair(neigh, 1));
+				}
+			} catch (Exception e) {
+				// System.out.println("OH NO!");
+			}
 
 		}
-		// DOWN
-		try {
-			if (map[vRow + 1][vCol] == 32) {
-				neigh = new Vertex(vRow + 1, vCol);
-				findNeighs(neigh, map);
-				vert.neighs.add(new Pair(neigh, 1));
 
-			}
-		} catch (Exception e) {
-
-		}
-		// LEFT
-		try {
-			if (map[vRow][vCol - 1] == 32) {
-				neigh = new Vertex(vRow, vCol - 1);
-				findNeighs(neigh, map);
-				vert.neighs.add(new Pair(neigh, 1));
-
-			}
-		} catch (Exception e) {
-
-		}
-		// RIGHT
-		try {
-			if (map[vRow][vCol + 1] == 32) {
-				neigh = new Vertex(vRow, vCol + 1);
-				findNeighs(neigh, map);
-				vert.neighs.add(new Pair(neigh, 1));
-			}
-		} catch (Exception e) {
-
-		}
 	}
 
 	char[][] startSink(String maze) {
@@ -101,7 +115,7 @@ public class Maze {
 			for (int c = 0; c < col.length; c++) {
 				tomap[r][c] = col[c];
 				if (col[c] == 32 || (col[c] <= 57 && col[c] >= 48)) {
-
+					V.add(new Vertex(r, c));
 					// START AND END POINTS
 					int r_perimeter = row.length - 1;
 					int c_perimeter = col.length - 1;
@@ -110,6 +124,7 @@ public class Maze {
 						if (c == 0 || c < c_perimeter) {
 							if (s == null) {
 								s = new Vertex(r, c);
+								s.dist = 0;
 							}
 							t = new Vertex(r, c);
 						}
@@ -119,6 +134,7 @@ public class Maze {
 						if (c == 0 || c == c_perimeter) {
 							if (s == null) {
 								s = new Vertex(r, c);
+								s.dist = 0;
 							}
 							t = new Vertex(r, c);
 						}
