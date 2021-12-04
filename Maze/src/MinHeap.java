@@ -38,7 +38,10 @@ public class MinHeap {
 	// Must run in O(log(n)) time.
 	void push(Vertex x, int p) {
 		H.add(new Pair(x, p));
-		I.put(x, p);
+		if (I.containsKey(x))
+			decrease_key(x, p);
+		else
+			I.put(x, p);
 		size += 1;
 		bubble_up(H.size() - 1);
 	}
@@ -65,7 +68,7 @@ public class MinHeap {
 		}
 
 		Pair newRoot = H.get(H.size() - 1);
-		I.remove(H.get(0).v);
+		// I.remove(H.get(0).v);
 		H.set(0, newRoot);
 		H.remove(H.size() - 1);
 		size -= 1;
@@ -106,9 +109,19 @@ public class MinHeap {
 	}
 
 	void bubble_down(int i) {
+		int lChild, rChild;
+		try {
+			lChild = H.get(2 * i + 1).getvalue();
+		} catch (Exception e) {
+			lChild = 100000;
+		}
 
-		int lChild = H.get(2 * i + 1).getvalue();
-		int rChild = H.get(2 * i + 2).getvalue();
+		try {
+			rChild = H.get(2 * i + 2).getvalue();
+		} catch (Exception e) {
+			rChild = 100000;
+		}
+
 		int parent = H.get(i).getvalue();
 
 		if (lChild < rChild && rChild < parent) {

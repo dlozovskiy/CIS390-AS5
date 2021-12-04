@@ -173,6 +173,7 @@ public class MainTest {
         test(sol.solve(maze).compareTo(soln) == 0);
 
         // Test mazes with portals
+        System.out.println("PORTALS");
         System.out.println("\nTEST 9");
         maze = "";
         maze += "### #\n";
