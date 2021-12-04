@@ -7,7 +7,7 @@ public class MainTest {
 
         Maze sol = new Maze();
         // Test a few mazes without portals
-        
+        /*
         System.out.println("\nTEST 1");
         maze = "";
         maze += "##### #\n";
@@ -172,7 +172,7 @@ public class MainTest {
         soln += "######################################o#\n";
         test(sol.solve(maze).compareTo(soln) == 0);
 
-        
+        */
         // Test mazes with portals
         System.out.println("PORTALS");
         System.out.println("\nTEST 9");

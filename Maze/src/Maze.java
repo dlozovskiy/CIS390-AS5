@@ -36,7 +36,7 @@ public class Maze {
 		int tIndex = -1;
 
 		for (int i = 0; i < V.size(); i++) {
-			Vertex vert = findNeighs(i);
+			Vertex vert = findNeighs(i,map);
 			if (vert == s)
 				vIndex = i;
 				traveled.add(vIndex);
@@ -124,10 +124,14 @@ public class Maze {
 	}
 	
 
-	Vertex findNeighs(int k) {
+	Vertex findNeighs(int k, char[][]map) {
 		Vertex vert = V.get(k);
 		int vRow = vert.row;
 		int vCol = vert.col;
+
+		char val = map[vRow][vCol];
+		int edge = (int)val-48;
+
 		int nRow, nCol;
 		for (int i = 0; i < V.size(); i++) {
 			Vertex n = V.get(i);
@@ -155,15 +159,23 @@ public class Maze {
 			}
 
 			//Check for portals
-			
+
 		}
+		if (val>47&&val<59){
+			Vertex close = findPortal(vert, map);
+			vert.neighs.add(new Pair(close, edge));
+			}
+			
+
+			
+		
 		return vert;
 	}
 
 	Vertex findPortal(Vertex open, char[][] map){
 		int oCol = open.col;
 		int oRow = open.row;
-		char portal = map[oCol][oRow];
+		char portal = map[oRow][oCol];
 
 		//Scan Map
 		for(int r = 0; r < map.length;r++){
