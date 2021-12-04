@@ -108,7 +108,7 @@ public class Maze {
 		//Pair p = path.get(path.size()-1);
 		Vertex v = t;
 		dist = v.dist;
-		
+		System.out.println(dist);
 		while(dist>=0){
 			iRow = v.row;
 			iCol = v.col;
@@ -164,6 +164,7 @@ public class Maze {
 		if (val>47&&val<59){
 			Vertex close = findPortal(vert, map);
 			vert.neighs.add(new Pair(close, edge));
+			//close.neighs.add(new Pair(vert, edge));
 			}
 			
 

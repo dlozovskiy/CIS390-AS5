@@ -172,7 +172,7 @@ public class MainTest {
         soln += "######################################o#\n";
         test(sol.solve(maze).compareTo(soln) == 0);
 
-        */
+        
         // Test mazes with portals
         System.out.println("PORTALS");
         System.out.println("\nTEST 9");
@@ -435,7 +435,7 @@ public class MainTest {
         soln += "#ooo      ooo#\n";
         soln += "##############\n";
         test(sol.solve(maze).compareTo(soln) == 0);
-
+        */
         System.out.println("\nTEST 29");
         maze = "";
         maze += "# ######################################\n";
