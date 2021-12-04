@@ -63,7 +63,7 @@ public class MinHeap {
 	//
 	// Must run in O(log(n)) time.
 	void pop() {
-		if (H.size() < 2) {
+		if (H.size() < 1) {
 			return;
 		}
 
@@ -109,6 +109,8 @@ public class MinHeap {
 	}
 
 	void bubble_down(int i) {
+		if (H.size() == 0) 
+			return;
 		int lChild, rChild;
 		try {
 			lChild = H.get(2 * i + 1).getvalue();

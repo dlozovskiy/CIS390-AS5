@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ResourceBundle.Control;
 import java.lang.Math;
 
 public class Maze {
@@ -28,7 +29,8 @@ public class Maze {
 		MinHeap heap = new MinHeap();
 		// Find Start and Sink Points
 		char[][] map = startSink(maze);
-		System.out.println(printPath(map));
+		ArrayList<Integer> traveled = new ArrayList<>();
+		//System.out.println(printPath(map));
 
 		int vIndex = 0;
 		int tIndex = -1;
@@ -37,74 +39,90 @@ public class Maze {
 			Vertex vert = findNeighs(i);
 			if (vert == s)
 				vIndex = i;
+				traveled.add(vIndex);
 			if (vert == t)
 				tIndex = i;
 		}
 
 		heap.push(s, 0);
+		//minheap arraylist becomes useful
 
-		while (vIndex != tIndex) {
-			for (int i = 0; i < V.get(vIndex).neighs.size(); i++) {
+		//while heap H is not empty
+		//Add vertex v neighbors
+		//Pop vertex v
+		//Go to next vertex
+		while (heap.H.size()>0) {
+			for (int i = 0; i < heap.front().neighs.size(); i++) {
 
-				Vertex vert = V.get(vIndex).neighs.get(i).getnode();
+				//Select neighbor vertex
+				Vertex vert = heap.front().neighs.get(i).getnode();
 
-				if (vert == V.get(vIndex).pre)
+				//If vert is pre, continue to next neighbor vertex
+				if (vert == heap.front().pre)
 					continue;
+
+				//If Vertex exists in minheap
 				if (heap.I.containsKey(vert)) {
-					if (V.get(vIndex).dist + V.get(vIndex).neighs.get(i).getvalue() < heap.I.get(vert)) {
-						heap.decrease_key(vert, V.get(vIndex).dist + V.get(vIndex).neighs.get(i).getvalue());
-						vert.pre = V.get(vIndex);
-						vert.dist = V.get(vIndex).dist + V.get(vIndex).neighs.get(i).getvalue();
+
+					//Check if distance to this same vertex is shorter
+					if (heap.front().dist + heap.front().neighs.get(i).getvalue() < heap.I.get(vert)) {
+						heap.decrease_key(vert, heap.front().dist + heap.front().neighs.get(i).getvalue());
+						vert.pre = heap.front();
+						vert.dist = heap.front().dist + heap.front().neighs.get(i).getvalue();
+
+					//Otherwise contine to next vertex
 					} else
 						continue;
 
 				}
 
-				vert.pre = V.get(vIndex);
-				vert.dist = V.get(vIndex).dist + V.get(vIndex).neighs.get(i).getvalue();
-
+				//If vertex is not found in minheap, add
+				vert.pre = heap.front();
+				vert.dist = heap.front().dist + heap.front().neighs.get(i).getvalue();
 				heap.push(vert, vert.dist);
+				
 
+				//Find vert index in V
+				
 				for (int n = 0; n < V.size(); n++) {
+
+						//Set vert neighbors to be scanned//
+					//Add vert index to traveled list
 					if (V.get(n) == vert)
-						vIndex = n;
+						//vIndex = n;
+						traveled.add(vIndex);
 				}
 			}
-
+			heap.pop();
 		}
 
-		// System.out.println(s.neighs.size());
-
-		// Add S
-		// Add neighbor vertices
-		// If neighbor vertex exist, update key and pre if shorter
-		// reach T
-
-		// heap.push(s, 0);
-
+		
+		map = drawPath(map);
 		Deconstructor();
-
+		System.out.println(printPath(map));
 		return printPath(map);
 
 	}
+	char[][] drawPath(char[][] map){
+		int iRow,iCol,dist;
+		//Pair p = path.get(path.size()-1);
+		Vertex v = t;
+		dist = v.dist;
+		
+		while(dist>=0){
+			iRow = v.row;
+			iCol = v.col;
+			map[iRow][iCol] = 'o';
 
-	void push(Vertex vertice, char[][] map) {
-
-		if (vertice == s) {
-			vertice.dist = 0;
-			vertice = findNeighs(vertice, map);
-
+			if(v.pre==null)break;
+			v = v.pre;
+			dist=v.dist;
 		}
-		vertice = findNeighs(vertice, map);
-		for (int i = 0; i < vertice.neighs.size(); i++) {
-			Vertex vert = vertice.neighs.get(i).getnode();
-			vert = findNeighs(vert, map);
-			vert.dist = vertice.dist + vertice.neighs.get(i).getvalue();
+		
 
-			vert.pre = vertice;
-
-		}
+		return map;
 	}
+	
 
 	Vertex findNeighs(int k) {
 		Vertex vert = V.get(k);
@@ -136,81 +154,32 @@ public class Maze {
 				vert.neighs.add(new Pair(n, 1));
 			}
 
+			//Check for portals
+			
 		}
 		return vert;
 	}
 
-	Vertex findNeighs(Vertex vert, char[][] map) {
+	Vertex findPortal(Vertex open, char[][] map){
+		int oCol = open.col;
+		int oRow = open.row;
+		char portal = map[oCol][oRow];
 
-		int vRow = vert.row;
-		int vCol = vert.col;
-		int preCol, preRow;
-		try {
-			preCol = vert.pre.col;
-			preRow = vert.pre.row;
-		} catch (Exception e) {
-			preCol = -1;
-			preRow = -1;
+		//Scan Map
+		for(int r = 0; r < map.length;r++){
+			for (int c = 0; c < map[r].length; c++) {
+				//Find character at alt coordinates
+				if(portal==map[r][c]&&(oCol!=c||oRow!=r)){
+					//Find vertex with such coordinates in V
+					for(int n = 0; n<V.size(); n++){
+						Vertex exit = V.get(n);
+						if (exit.col==c&&exit.row==r) return exit;
+					}
+				}
+			}	
 		}
-		// vert.dist = Math.abs(vRow - s.row) + Math.abs(vCol - s.col);
-		Vertex neigh;
-
-		// UP
-		try {
-			if (map[vRow - 1][vCol] == 32) {
-				// System.out.println("UP!");
-				neigh = new Vertex(vRow - 1, vCol);
-				neigh.pre = vert;
-				if (neigh.col != preCol || neigh.row != preRow)
-					vert.neighs.add(new Pair(neigh, 1));
-
-			}
-		} catch (Exception e) {
-			// System.out.println("OH NO!");
-		}
-		// DOWN
-		try {
-			if (map[vRow + 1][vCol] == 32) {
-				// System.out.println("DOWN!");
-				neigh = new Vertex(vRow + 1, vCol);
-				neigh.pre = vert;
-				if (neigh.col != preCol || neigh.row != preRow)
-					vert.neighs.add(new Pair(neigh, 1));
-
-			}
-		} catch (Exception e) {
-			// System.out.println("OH NO!");
-		}
-		// LEFT
-		try {
-			if (map[vRow][vCol - 1] == 32) {
-				// System.out.println("LEFT!");
-				neigh = new Vertex(vRow, vCol - 1);
-				neigh.pre = vert;
-				if (neigh.col != preCol || neigh.row != preRow)
-					vert.neighs.add(new Pair(neigh, 1));
-
-			}
-		} catch (Exception e) {
-			// System.out.println("OH NO!");
-		}
-		// RIGHT
-		try {
-			if (map[vRow][vCol + 1] == 32) {
-				// System.out.println("RIGHT!");
-				neigh = new Vertex(vRow, vCol + 1);
-				neigh.pre = vert;
-				if (neigh.col != preCol || neigh.row != preRow)
-					vert.neighs.add(new Pair(neigh, 1));
-			}
-		} catch (Exception e) {
-			// System.out.println("OH NO!");
-		}
-
-		return vert;
-
+		return open;
 	}
-
 	char[][] startSink(String maze) {
 
 		String row[] = maze.split("\n");
